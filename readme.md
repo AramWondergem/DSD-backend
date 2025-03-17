@@ -6,7 +6,7 @@
 - ide. For backend development, IntelliJ is recommend. It has a free community version. https://www.jetbrains.com/idea/download/?section=windows No ide is needed when you are only running the backend to work on the frontend. The instructions below are all in the terminal.
 
 ### Running application
-- go to `super_backend` dir in the terminal
+- Go to dir with the backend in the terminal. If you opened the project in your IDE, the terminal is already pointing to the right folder. 
 - Run in terminal `docker compose up -d` to start up docker container with postgres database
 - Set the environment variable `JWT_SECRET_ENV`. It should be a string of at least 32 characters. An example could be: `THisIsaveryLongJWTsecretThatshouldBeALittleBitLongerITHinkItisLongEnough`. If you want to use the JWT token from a previous session, you must ensure that the secret is the same secret. I set a temperary variable in my terminal at the begiining of the day once like this: 
   - Powershell: run `$env:JWT_SECRET_ENV="{YOUR_SECRET}"`. You can check with `echo $env:JWT_SECRET_ENV` if you set the variable
