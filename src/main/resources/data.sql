@@ -1,6 +1,10 @@
 DELETE FROM doors_users where (select count(*) from doors_users) > 0;
 DELETE FROM users_roles where (select count(*) from users_roles) > 0;
 DELETE FROM tenants_apartments where (select count(*) from tenants_apartments) > 0;
+DELETE FROM lease_tenants where (select count(*) from lease_tenants) > 0;
+DELETE FROM tenants where (select count(*) from tenants) > 0;
+DELETE FROM complaints where (select count(*) from complaints) > 0;
+DELETE FROM leases where (select count(*) from leases) > 0;
 DELETE FROM entry_codes where (select count(*) from entry_codes) > 0;
 DELETE FROM users where (select count(*) from users) > 0;
 DELETE FROM roles where (select count(*) from roles) > 0;
