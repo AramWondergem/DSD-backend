@@ -31,4 +31,7 @@ public class Apartment {
 
     @ManyToMany(mappedBy = "apartments")
     Set<User> tenants;
+
+    @OneToMany(mappedBy = "apartment")
+    List<Locker> lockers;
 }
