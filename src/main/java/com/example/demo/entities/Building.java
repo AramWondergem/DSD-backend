@@ -22,4 +22,7 @@ public class Building {
 
     @OneToMany(mappedBy = "building")
     Set<Parking> parkings;
+
+    @OneToMany(mappedBy = "building")
+    List<Locker> lockers;
 }
