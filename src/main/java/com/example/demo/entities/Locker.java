@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Entity
-@Table
+@Table(name = "lockers")
 public class Locker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +24,10 @@ public class Locker {
     @JoinColumn(name = "apartment_id")
     Apartment apartment;
 
-    ZonedDateTime creationDate;
+    ZonedDateTime updateDate;
+
+    @PreUpdate
+    public void setCreationDate() {
+        this.updateDate = ZonedDateTime.now();
+    }
 }
