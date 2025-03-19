@@ -81,7 +81,7 @@ INSERT INTO tenants_apartments (user_id,apartment_id) VALUES (1,1),
 
 INSERT INTO doors_users (user_id, door_id) VALUES (1,1);
 
-INSERT INTO lockers (id, locker_number, building_id, apartment_id, creation_date)
+INSERT INTO lockers (id, locker_number, building_id, apartment_id, update_date)
 VALUES
     (1, 101, 1, NULL, '2025-03-19T10:00:00Z'),
     (2, 102, 1, NULL, '2025-03-19T10:05:00Z'),
