@@ -16,6 +16,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.util.enums.DocStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,10 +33,12 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     private final LeaseRepository leaseRepository;
     private final ApartmentRepository apartmentRepository;
     private final TenantRepository tenantRepository;
+    @Value("${dropBoxSignToken}")
+    String dropBoxSignToken;
 
     @Autowired
     public LeaseManagementDropBoxImpl(UserRepository userRepository, LeaseRepository leaseRepository, ApartmentRepository apartmentRepository, TenantRepository tenantRepository) {
-        ApiClient apiClient = com.dropbox.sign.Configuration.getDefaultApiClient().setApiKey(System.getProperty("DROPBOX_API_KEY"));
+        ApiClient apiClient = com.dropbox.sign.Configuration.getDefaultApiClient().setApiKey(dropBoxSignToken);
         this.signatureRequestApi = new SignatureRequestApi(apiClient);
         this.userRespository = userRepository;
         this.leaseRepository = leaseRepository;

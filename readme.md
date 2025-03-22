@@ -14,6 +14,14 @@
 - Run the following command in the terminal to start up the backend
   - Powershell: `./mvnw.cmd spring-boot:run`
   - Mac/Linux `./mvnw spring-boot:run`. It could be that you have to run `chmod +x mvnw` before you can run `spring-boot:run`
+- To use lease services, need to set api key, you need to either ask ruben or can create one of your own. If you create your own, you need to set the callback url to receive callbacks from dropbox:
+  - Bash `export DROPBOX_API_KEY="{YOUR_SECRET}"` 
+- To run with Ngrok, need to set spring profile to dev: 
+  - Bash: `export SPRING_PROFILES_ACTIVE=dev`
+  - Powershell: `$env:SPRING_PROFILES_ACTIVE="dev"`
+  - get a ngrok token : https://dashboard.ngrok.com/get-started/your-authtoken, or ask ruben
+  - set ngrok token : `export NGROK_AUTHTOKEN="{your-ngrok-authtoken}"` via bash
+  - start backend `mvn spring-boot:run`
 
 ### Shutting down application
 - In the terminal use `ctrl+c` to shut down the application
@@ -31,11 +39,9 @@ MapStruct is a package that generates the boilerplate code for mappers. If you n
 ## to use h2 db to persist while we setup postgres
 I added a h2 db to get started persisting and building out your services. Meanwhile we decide where to host our postgres db and backend.
 find more info here: https://www.h2database.com/html/main.html , https://howtodoinjava.com/spring-boot/h2-database-example/
-after running the spring boot app in 
-
-```src/main/java/com/example/demo/AppApplication.java```
-
-go ahead and run it. once it finished. go ahead to 
+after running the spring boot app in
+- Bash: `export SPRING_PROFILES_ACTIVE=dev`
+- start backend `mvn spring-boot:run`
 
 ``http://localhost:8080/h2-console`` (assuming hosted on port 8080)
 you should see: 
