@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import com.example.demo.util.enums.ComplaintStatus;
+import com.example.demo.util.enums.ComplaintType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,4 +33,7 @@ public class Complaint {
 
     @Column(name = "complaint_status")
     ComplaintStatus complaintStatus;
+
+    @Column(name = "complaint_type")
+    ComplaintType complaintType;
 }
