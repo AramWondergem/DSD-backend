@@ -21,12 +21,11 @@ public class NgrokService {
 
     @PostConstruct
     public void startNgrok() throws IOException {
-        String gettoken = System.getProperty(ngrokAuthToken);
-        if (gettoken == null || gettoken.isEmpty()) {
+        if (ngrokAuthToken == null || ngrokAuthToken.isEmpty()) {
             throw new IllegalStateException("NGROK_AUTHTOKEN is not set!");
         }
 
-        var sessionBuilder = Session.withAuthtoken(gettoken)
+        var sessionBuilder = Session.withAuthtoken(ngrokAuthToken)
                 .metadata("Spring Boot Ngrok Session");
 
         try (var session = sessionBuilder.connect()) {

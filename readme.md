@@ -22,6 +22,7 @@
   - get a ngrok token : https://dashboard.ngrok.com/get-started/your-authtoken, or ask ruben
   - set ngrok token : `export NGROK_AUTHTOKEN="{your-ngrok-authtoken}"` via bash
   - start backend `mvn spring-boot:run`
+  - note: ngrok free plan creates a new url each time the app runs. Workaround is to set the dropbox signature callback url to what is generated. Setting this is essential to receive notifications and persist changes for all things lease signature related
 
 ### Shutting down application
 - In the terminal use `ctrl+c` to shut down the application
