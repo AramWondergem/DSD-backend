@@ -51,7 +51,9 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     public SignatureRequestGetResponse createLeaseSignatureRequest(LeaseSignRequestDTO leaseSignRequestDTO) throws ApiException {
         SignatureRequestGetResponse response;
         Optional<User> userRecord = userRespository.findByEmailIgnoreCase(leaseSignRequestDTO.getSignerEmails().getFirst());
-        User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
+        //User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
+        //todo this was set so we can test without setting up user account each time each time
+        User user = userRecord.orElse(userRespository.save(User.builder().email(leaseSignRequestDTO.getSignerEmails().getFirst()).name("test user created").password("test").username(leaseSignRequestDTO.getSignerUserName() != null ? leaseSignRequestDTO.getSignerUserName() : "default").build()));
         var signer = new SubSignatureRequestSigner().emailAddress(leaseSignRequestDTO.getSignerEmails().getFirst()).name(user.getName()).order(0);
         var signOptions = new SubSigningOptions().draw(true).type(true).defaultType(SubSigningOptions.DefaultTypeEnum.DRAW);
         var subFieldOptions = new SubFieldOptions().dateFormat(SubFieldOptions.DateFormatEnum.DDMMYYYY);

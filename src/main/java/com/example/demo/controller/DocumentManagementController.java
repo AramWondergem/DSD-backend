@@ -6,6 +6,7 @@ import com.example.demo.dto.LeaseSignRequestDTO;
 import com.example.demo.dto.MetaData;
 import com.example.demo.entities.Lease;
 import com.example.demo.services.LeaseManagementDropBoxImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,8 +35,7 @@ public class DocumentManagementController {
             description = "Sends signature request and saves to database for a valid user",
             requestBody = @RequestBody(
                     content = {
-                            @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE),
-                            @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                            @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
                     }
             ),
             responses = {
@@ -51,25 +51,19 @@ public class DocumentManagementController {
             }
     )
     @PostMapping(path = "/send",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE},
+            consumes = "multipart/form-data",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SignatureRequestGetResponse> sendLeaseSignatureRequest(
-            @RequestParam(value = "file", required = false) MultipartFile file, // multipart/form-data
-            @RequestBody(required = false) byte[] fileData, // application/octet-stream
-            @RequestPart(value = "leaseSignatureRequestDetails", required = false) LeaseSignRequestDTO leaseSignRequestDTO,
-            @RequestPart(value = "metaData", required = false) MetaData metaData) throws Exception {
-
+            @RequestPart(value = "file") MultipartFile file,
+            @RequestPart(value = "leaseSignatureRequestDetails") String leaseSignRequestString,
+            @RequestPart(value = "metaData") String metaDataString) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
         Path document;
-        if (file != null) {
-            document = Files.createTempFile("lease", ".tmp");
-            file.transferTo(document);
-        }
-        else if (fileData != null) {
-            document = Files.createTempFile("lease", ".tmp");
-            Files.write(document, fileData);
-        } else {
-            return ResponseEntity.badRequest().body(null); // No file provided
-        }
+        LeaseSignRequestDTO leaseSignRequestDTO = objectMapper.readValue(leaseSignRequestString, LeaseSignRequestDTO.class);
+        MetaData metaData = objectMapper.readValue(metaDataString, MetaData.class);
+        document = Files.createTempFile("lease", ".tmp");
+        file.transferTo(document);
+
 
         leaseSignRequestDTO.setFile(document.toFile());
         leaseSignRequestDTO.setMetaData(metaData);
