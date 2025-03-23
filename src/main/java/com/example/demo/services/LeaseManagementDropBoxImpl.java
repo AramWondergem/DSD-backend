@@ -16,6 +16,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.util.enums.DocStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,10 +33,12 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     private final LeaseRepository leaseRepository;
     private final ApartmentRepository apartmentRepository;
     private final TenantRepository tenantRepository;
+    @Value("${dropBoxSignToken}")
+    String dropBoxSignToken;
 
     @Autowired
     public LeaseManagementDropBoxImpl(UserRepository userRepository, LeaseRepository leaseRepository, ApartmentRepository apartmentRepository, TenantRepository tenantRepository) {
-        ApiClient apiClient = com.dropbox.sign.Configuration.getDefaultApiClient().setApiKey(System.getProperty("DROPBOX_API_KEY"));
+        ApiClient apiClient = com.dropbox.sign.Configuration.getDefaultApiClient().setApiKey(dropBoxSignToken);
         this.signatureRequestApi = new SignatureRequestApi(apiClient);
         this.userRespository = userRepository;
         this.leaseRepository = leaseRepository;
@@ -48,7 +51,9 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     public SignatureRequestGetResponse createLeaseSignatureRequest(LeaseSignRequestDTO leaseSignRequestDTO) throws ApiException {
         SignatureRequestGetResponse response;
         Optional<User> userRecord = userRespository.findByEmailIgnoreCase(leaseSignRequestDTO.getSignerEmails().getFirst());
-        User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
+        //User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
+        //todo this was set so we can test without setting up user account each time each time
+        User user = userRecord.orElse(userRespository.save(User.builder().email(leaseSignRequestDTO.getSignerEmails().getFirst()).name("test user created").password("test").username(leaseSignRequestDTO.getSignerUserName() != null ? leaseSignRequestDTO.getSignerUserName() : "default").build()));
         var signer = new SubSignatureRequestSigner().emailAddress(leaseSignRequestDTO.getSignerEmails().getFirst()).name(user.getName()).order(0);
         var signOptions = new SubSigningOptions().draw(true).type(true).defaultType(SubSigningOptions.DefaultTypeEnum.DRAW);
         var subFieldOptions = new SubFieldOptions().dateFormat(SubFieldOptions.DateFormatEnum.DDMMYYYY);

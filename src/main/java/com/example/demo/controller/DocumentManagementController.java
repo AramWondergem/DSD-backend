@@ -6,8 +6,8 @@ import com.example.demo.dto.LeaseSignRequestDTO;
 import com.example.demo.dto.MetaData;
 import com.example.demo.entities.Lease;
 import com.example.demo.services.LeaseManagementDropBoxImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -29,32 +29,49 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class DocumentManagementController {
     final LeaseManagementDropBoxImpl leaseManagementDropBox;
+
     @Operation(
-            summary = "send doc request via dropbox signature services",
-            description = "sends signature request and saves to database for a valid user",
+            summary = "Send document request via Dropbox signature services",
+            description = "Sends signature request and saves to database for a valid user",
             requestBody = @RequestBody(
-                    content = @Content(
-                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
-                    )
+                    content = {
+                            @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
+                    }
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "lease successfully sent",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignatureRequestGetResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
-                    @ApiResponse(responseCode = "500", description = "server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
+                    @ApiResponse(responseCode = "200", description = "Lease successfully sent",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = SignatureRequestGetResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Error.class))),
+                    @ApiResponse(responseCode = "500", description = "Server error",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Error.class)))
             }
     )
-    @PostMapping(path = "/send", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "application/json")
-    ResponseEntity<SignatureRequestGetResponse> sendLeaseSignatureRequest(@RequestPart("file") @Schema(type = "string", format = "binary") MultipartFile file, @Parameter(description = "all other details", required = true) @RequestPart("leaseSignatureRequestDetails") LeaseSignRequestDTO leaseSignRequestDTO, @Parameter(description = "meta data about the document", required = true) @RequestPart("metaData") MetaData metaData) throws Exception {
+    @PostMapping(path = "/send",
+            consumes = "multipart/form-data",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SignatureRequestGetResponse> sendLeaseSignatureRequest(
+            @RequestPart(value = "file") MultipartFile file,
+            @RequestPart(value = "leaseSignatureRequestDetails") String leaseSignRequestString,
+            @RequestPart(value = "metaData") String metaDataString) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
         Path document;
+        LeaseSignRequestDTO leaseSignRequestDTO = objectMapper.readValue(leaseSignRequestString, LeaseSignRequestDTO.class);
+        MetaData metaData = objectMapper.readValue(metaDataString, MetaData.class);
         document = Files.createTempFile("lease", ".tmp");
         file.transferTo(document);
+
+
         leaseSignRequestDTO.setFile(document.toFile());
         leaseSignRequestDTO.setMetaData(metaData);
         SignatureRequestGetResponse body = leaseManagementDropBox.createLeaseSignatureRequest(leaseSignRequestDTO);
-        return new ResponseEntity<>(body, HttpStatus.OK);
+        return ResponseEntity.ok(body);
     }
-     @Operation(
+
+    @Operation(
             summary = "send request to cancel, needs to wait for a callback",
             description = "uses external id from dropbox to send request to cancel to dropbox"
             ,
@@ -68,6 +85,7 @@ public class DocumentManagementController {
         leaseManagementDropBox.cancelLeaseSignatureRequest(leaseId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @Operation(
             summary = "get signature status",
             description = "uses external id from dropbox to pull"
@@ -78,18 +96,19 @@ public class DocumentManagementController {
                     @ApiResponse(responseCode = "4XX", description = "bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
             }
     )
-    @GetMapping(path = "/get",  produces = "application/json")
+    @GetMapping(path = "/get", produces = "application/json")
     ResponseEntity<Lease> getLeaseSignatureStatus(@RequestParam Long leaseId) throws ApiException {
         //todo try out a mapstruct here
         return new ResponseEntity<>(leaseManagementDropBox.getLeaseStatus(leaseId), HttpStatus.OK);
     }
+
     @Operation(
             summary = "callback for dropbox to update status",
             description = "uses our lease ID to read stored external id provided by dropbox to get the most recent status of specific doc"
             ,
             responses = {
                     @ApiResponse(responseCode = "200", description = "db updated"
-                          ),
+                    ),
                     @ApiResponse(responseCode = "4XX", description = "bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
             }
     )

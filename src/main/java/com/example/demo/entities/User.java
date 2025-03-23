@@ -3,6 +3,7 @@ package com.example.demo.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Table(name = "users")
