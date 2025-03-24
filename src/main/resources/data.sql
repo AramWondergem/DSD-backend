@@ -35,6 +35,7 @@ VALUES
 
 
 
+
 INSERT INTO users_roles (user_id, role_id)
 VALUES
     (1,1),(1,2),
@@ -51,6 +52,7 @@ VALUES
     (12,1),
     (13,1), (13,2),
     (14,1), (14,2);
+
 
 INSERT INTO buildings (id) values (1);
 
@@ -92,5 +94,4 @@ VALUES
     (3, 103, 1, NULL, '2025-03-19T10:10:00Z'),
     (4, 104, 1, NULL, '2025-03-19T10:15:00Z'),
     (5, 105, 1, NULL, '2025-03-19T10:20:00Z');
-
 
