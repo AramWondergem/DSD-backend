@@ -13,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 @Hidden
 @Slf4j
@@ -78,5 +81,13 @@ public class GlobalControllerHandler {
          Error error = new Error("An unexpected error occurred. Please report to dev team", exception);
         log.error("unchecked exception thrown: {}", error);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> handleResponseStatusException(ResponseStatusException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", ex.getStatusCode().toString());
+        errorResponse.put("message", ex.getReason());
+        return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
     }
 }

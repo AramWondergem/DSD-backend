@@ -57,7 +57,7 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageResponse.class)))
             }
     )
-    @GetMapping(path = "/search", produces = {"application/hal+json"})
+    @GetMapping(path = "/search")
     public ResponseEntity<PagedModel<EntityModel<UserRead>>> getUsersByEmail(@RequestParam String email, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "email") String sortParam) {
         Page<User> searchResults = userService.searchUsersWithEmail(email, page, size, sortParam);
         Page<UserRead> mappedPage = searchResults.map(user -> UserRead.builder().username(user.getUsername()).email(user.getEmail()).name(user.getName()).build());
