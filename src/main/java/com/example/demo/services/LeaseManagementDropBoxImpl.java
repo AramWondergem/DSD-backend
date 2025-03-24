@@ -60,9 +60,7 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     public SignatureRequestGetResponse createLeaseSignatureRequest(LeaseSignRequestDTO leaseSignRequestDTO) throws ApiException {
         SignatureRequestGetResponse response;
         Optional<User> userRecord = userRespository.findByEmailIgnoreCase(leaseSignRequestDTO.getSignerEmails().getFirst());
-        //User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
-        //todo this was set so we can test without setting up user account each time each time
-        User user = userRecord.orElse(userRespository.save(User.builder().email(leaseSignRequestDTO.getSignerEmails().getFirst()).name("test user created").password("test").username(leaseSignRequestDTO.getSignerUserName() != null ? leaseSignRequestDTO.getSignerUserName() : "test").build()));
+        User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
         var signer = new SubSignatureRequestSigner().emailAddress(leaseSignRequestDTO.getSignerEmails().getFirst()).name(user.getName()).order(0);
         var signOptions = new SubSigningOptions().draw(true).type(true).defaultType(SubSigningOptions.DefaultTypeEnum.DRAW);
         var subFieldOptions = new SubFieldOptions().dateFormat(SubFieldOptions.DateFormatEnum.DDMMYYYY);
@@ -77,9 +75,7 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
                 .fieldOptions(subFieldOptions)
                 .testMode(true);
         Optional<Apartment> apartmentOptional = apartmentRepository.findByApartmentNumber(leaseSignRequestDTO.getApartmentNumber());
-        //Apartment apartment = apartmentOptional.orElseThrow(() -> new EmptyResultDataAccessException("no record matches apartment number in database", 1));
-        //todo this just to avoid inputting incorrect data for frontend
-        Apartment apartment = apartmentOptional.orElse(apartmentRepository.save(Apartment.builder().apartmentNumber(leaseSignRequestDTO.getApartmentNumber()).build()));
+        Apartment apartment = apartmentOptional.orElseThrow(() -> new EmptyResultDataAccessException("no record matches apartment number in database", 1));
         Optional<Tenant> tenantOptional = Optional.of(tenantRepository.findByUser(user).orElse(tenantRepository.save(Tenant.builder().user(user).build())));
         response = signatureRequestApi.signatureRequestSend(data);
         Lease newLease = leaseRepository.save(Lease.builder().status(DocStatus.PENDING).apartment((apartment)).externalId(response.getSignatureRequest().getSignatureRequestId())

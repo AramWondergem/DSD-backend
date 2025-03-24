@@ -29,7 +29,9 @@ VALUES
     (9, 'glopez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'glopez@test.nl', 'Grace Lopez'),
     (10, 'hnguyen', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'hnguyen@test.nl', 'Henry Nguyen'),
     (11, 'ipatel', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'ipatel@test.nl', 'Isabella Patel'),
-    (12, 'jrodriguez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'jrodriguez@test.nl', 'Jacob Rodriguez');
+    (12, 'jrodriguez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'jrodriguez@test.nl', 'Jacob Rodriguez'),
+    (13, 'shannan', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'phunbunch@gmail.com', 'shannan'),
+    (14, 'ruben', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'rubengarcia0515@gmail.com', 'ruben g ');
 
 
 
@@ -46,7 +48,9 @@ VALUES
     (9,1),
     (10,1),
     (11,1),
-    (12,1);
+    (12,1),
+    (13,1), (13,2),
+    (14,1), (14,2);
 
 INSERT INTO buildings (id) values (1);
 
@@ -88,4 +92,5 @@ VALUES
     (3, 103, 1, NULL, '2025-03-19T10:10:00Z'),
     (4, 104, 1, NULL, '2025-03-19T10:15:00Z'),
     (5, 105, 1, NULL, '2025-03-19T10:20:00Z');
+
 
