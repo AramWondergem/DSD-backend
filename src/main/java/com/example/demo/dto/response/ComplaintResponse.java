@@ -2,6 +2,7 @@ package com.example.demo.dto.response;
 
 import com.example.demo.dto.UserDTO;
 import com.example.demo.util.enums.ComplaintStatus;
+import com.example.demo.util.enums.ComplaintType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,4 +27,6 @@ public class ComplaintResponse {
     ZonedDateTime timeCreated;
 
     ComplaintStatus complaintStatus;
+
+    ComplaintType complaintType;
 }
