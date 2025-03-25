@@ -31,7 +31,7 @@ VALUES
     (11, 'ipatel', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'ipatel@test.nl', 'Isabella Patel'),
     (12, 'jrodriguez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'jrodriguez@test.nl', 'Jacob Rodriguez'),
     (13, 'shannan', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'phunbunch@gmail.com', 'shannan'),
-    (14, 'ruben', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'rubengarcia0515@gmail.com', 'ruben g ');
+    (100, 'ruben', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'rubengarcia0515@gmail.com', 'ruben g ');
 
 
 
@@ -51,7 +51,16 @@ VALUES
     (11,1),
     (12,1),
     (13,1), (13,2),
-    (14,1), (14,2);
+    (100,1), (100,2);
+
+ INSERT INTO complaints (id,submitter_user_id, time_created, complaint_status, complaint_type) values
+  (98,13, '2025-03-19T10:00:00Z', 'NEW', 'OTHER'),
+  (99,13, '2025-03-20T10:00:00Z', 'PENDING', 'REPAIR'),
+  (97,100, '2025-03-25T10:00:00Z', 'PENDING', 'NOISE'),
+   (96,100, '2025-02-25T10:00:00Z', 'RESOLVED', 'NOISE'),
+  (100,100, '2025-03-22T10:00:00Z', 'RESOLVED', 'NOISE');
+
+
 
 
 INSERT INTO buildings (id) values (1);
@@ -62,6 +71,7 @@ INSERT INTO apartments (id, apartment_number,building_id) VALUES (1,1,1),
                                                                  (4,4,1),
                                                                  (5,5,1),
                                                                  (6,6,1),
+                                                                 (100,300,1),
                                                                  (7,7,1);
 
 INSERT INTO parkings (id,number_of_guest_spots, number_of_tenant_spots, building_id) VALUES (1 ,10, 80,1);
@@ -83,7 +93,8 @@ INSERT INTO tenants_apartments (user_id,apartment_id) VALUES (1,1),
                                                              (9,5),
                                                              (10,6),
                                                              (11,6),
-                                                             (12,7);
+                                                             (12,7),
+                                                             (100,100);
 
 INSERT INTO doors_users (user_id, door_id) VALUES (1,1);
 
@@ -94,4 +105,11 @@ VALUES
     (3, 103, 1, NULL, '2025-03-19T10:10:00Z'),
     (4, 104, 1, NULL, '2025-03-19T10:15:00Z'),
     (5, 105, 1, NULL, '2025-03-19T10:20:00Z');
+
+INSERT INTO tenants (id, user_profile_id) values (100,13);
+INSERT INTO leases (id, lease_start_date, lease_end_date,external_id, status,apartment_id) values
+(100,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',100);
+INSERT INTO lease_tenants values (100,100);
+
+
 
