@@ -10,12 +10,18 @@
 - Run in terminal `docker compose up -d` to start up docker container with postgres database
 - Set the environment variable `JWT_SECRET_ENV`. It should be a string of at least 32 characters. An example could be: `THisIsaveryLongJWTsecretThatshouldBeALittleBitLongerITHinkItisLongEnough`. If you want to use the JWT token from a previous session, you must ensure that the secret is the same secret. I set a temperary variable in my terminal at the begiining of the day once like this: 
   - Powershell: run `$env:JWT_SECRET_ENV="{YOUR_SECRET}"`. You can check with `echo $env:JWT_SECRET_ENV` if you set the variable
-  - Mac/Linux: run `export JWT_SECRET_ENV="{YOUR_SECRET}"`. You can check with `echo $JWT_SECRET_ENV` if you set the variable
+
+  - Mac/Linux: run `export JWT_SECRET_ENV="{YOUR_SECRET}""`. You can check with `echo $JWT_SECRET_ENV` if you set the variable
+- Set the environment variable `DROPBOX_API_KEY` and `NGROK_AUTHTOKEN` in the same way as with `JWT_SECRET_ENV. If you do not want to work with the Lease endpoints, you can make up values for the variables. Otherwise, see the instructions below.
+
 - Run the following command in the terminal to start up the backend
   - Powershell: `./mvnw.cmd spring-boot:run`
   - Mac/Linux `./mvnw spring-boot:run`. It could be that you have to run `chmod +x mvnw` before you can run `spring-boot:run`
 
-- To use lease services, need to set api key, you need to either ask ruben or can create one of your own. If you create your own, you need to set the callback url to receive callbacks from dropbox:
+
+### start up instructions for lease service
+- To use lease services, need to set api key for dropbox, you need to either ask ruben or can create one of your own. If you create your own, you need to set the callback url to receive callbacks from dropbox:
+
   - Bash `export DROPBOX_API_KEY="{YOUR_SECRET}"` 
 - To run with Ngrok, need to set spring profile to dev: 
   - Bash: `export SPRING_PROFILES_ACTIVE=dev`
