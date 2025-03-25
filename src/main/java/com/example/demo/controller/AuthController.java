@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserDTO;
+import com.example.demo.entities.User;
+import com.example.demo.mappers.UserMapper;
 import jakarta.validation.Valid;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +21,7 @@ import com.example.demo.services.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserMapper userMapper;
 
     @PostMapping("/login")
     public ResponseEntity<LoginReponse> login(@Valid @RequestBody LoginRequest request) {
@@ -25,8 +29,9 @@ public class AuthController {
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterUserRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody RegisterUserRequest request) {
+        User user = authService.register(request);
+        return ResponseEntity.ok(userMapper.mapToUserDTO(user));
     }
 
 
