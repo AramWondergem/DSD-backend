@@ -6,6 +6,7 @@ import com.example.demo.entities.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.enums.ComplaintStatus;
+import com.example.demo.util.enums.ComplaintType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class ComplaintServiceImpl {
 
     public Complaint createComplaint(ComplaintRequest complaintDTO, String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new EmptyResultDataAccessException("no user in db to create compalint with. please create a user account and log in to submit this", 1));
-        Complaint newComplaint = Complaint.builder().complaintStatus(ComplaintStatus.NEW).timeCreated(ZonedDateTime.now()).message(complaintDTO.getMessage()).user(user).build();
+        Complaint newComplaint = Complaint.builder().complaintStatus(ComplaintStatus.NEW).timeCreated(ZonedDateTime.now()).message(complaintDTO.getMessage()).complaintType(ComplaintType.fromValue(complaintDTO.getComplaintType())).user(user).build();
         return complaintRepository.save(newComplaint);
     }
 
@@ -43,6 +44,7 @@ public class ComplaintServiceImpl {
     public Complaint updateComplaint(Long id, ComplaintRequest complaintDTO) {
         Complaint complaint = complaintRepository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException("no complaint with exists with id:," + id, 1));
         complaint.setMessage(complaintDTO.getMessage());
+        complaint.setComplaintStatus(ComplaintStatus.RESOLVED);
         return complaintRepository.save(complaint);
     }
 

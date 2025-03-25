@@ -29,8 +29,9 @@ VALUES
     (1009, 'glopez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'glopez@test.nl', 'Grace Lopez'),
     (1010, 'hnguyen', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'hnguyen@test.nl', 'Henry Nguyen'),
     (1011, 'ipatel', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'ipatel@test.nl', 'Isabella Patel'),
-    (1012, 'jrodriguez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'jrodriguez@test.nl', 'Jacob Rodriguez');
-
+    (1012, 'jrodriguez', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'jrodriguez@test.nl', 'Jacob Rodriguez'),
+    (1013, 'shannan', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'phunbunch@gmail.com', 'shannan'),
+    (1014, 'ruben', '$2a$10$DngToCGxdfBYmj9O2l01c.JtNfvKSBOqgYbuHlMLBf52f9s6wJO7u', 'rubengarcia0515@gmail.com', 'ruben g ');
 
 
 INSERT INTO users_roles (user_id, role_id)
@@ -46,7 +47,9 @@ VALUES
     (1009,1),
     (1010,1),
     (1011,1),
-    (1012,1);
+    (1012,1),
+    (1013,1), (1013,2),
+    (1014,1), (1014,2);
 
 INSERT INTO buildings (id) values (1001);
 

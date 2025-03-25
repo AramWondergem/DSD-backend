@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.dropbox.sign.ApiException;
 import com.dropbox.sign.model.SignatureRequestGetResponse;
+import com.example.demo.dto.LeaseDTO;
 import com.example.demo.dto.LeaseSignRequestDTO;
 import com.example.demo.dto.MetaData;
 import com.example.demo.entities.Lease;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -98,8 +100,24 @@ public class DocumentManagementController {
     )
     @GetMapping(path = "/get", produces = "application/json")
     ResponseEntity<Lease> getLeaseSignatureStatus(@RequestParam Long leaseId) throws ApiException {
-        //todo try out a mapstruct here
         return new ResponseEntity<>(leaseManagementDropBox.getLeaseStatus(leaseId), HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Update a lease by ID for app usage",
+            requestBody = @RequestBody(
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LeaseDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lease successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lease.class))),
+                    @ApiResponse(responseCode = "404", description = "Lease not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class)))
+            }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<Lease> updateLease(@PathVariable Long id, @RequestBody LeaseDTO leaseDTO) {
+        //todo validate
+        Lease updatedLease = leaseManagementDropBox.update(id, leaseDTO);
+        return new ResponseEntity<>(updatedLease, HttpStatus.OK);
     }
 
     @Operation(
@@ -114,7 +132,21 @@ public class DocumentManagementController {
     )
     @GetMapping(path = "/update")
     ResponseEntity<SignatureRequestGetResponse> updateStatus(@RequestParam Long leaseId) throws ApiException {
+        //todo validate
         leaseManagementDropBox.dropboxCallback(leaseId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get all leases",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Leases retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lease.class)))
+            }
+    )
+    @GetMapping("/all")
+    public ResponseEntity<List<Lease>> getAllLeases() {
+        //todo validate
+        List<Lease> leases = leaseManagementDropBox.getAll();
+        return new ResponseEntity<>(leases, HttpStatus.OK);
     }
 }
