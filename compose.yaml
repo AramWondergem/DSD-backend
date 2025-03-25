@@ -1,8 +1,30 @@
 services:
+  app:
+    image: 'apartment:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/dsd-database
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - DROPBOX_API_KEY=a1ed3abf3599821f8d07b286c04e82fec3128da1160b7e34c162126e82c8ead0
+      - JWT_SECRET_ENV=asdfgakjshdfgajshdfgkajshdfgkajshdfgkajshdfgkjasgdfkajgdfhkajshdfkasjdhgkajsdhfgkjashdgk
+      - NGROK_AUTHTOKEN=2um6qFYK1OL7hGBcbNOzUT6FlzZ_2aWsodk9UYZDJ1jAVCAWT
+
+    ports:
+      - 8090:8080
+
   db:
     image: postgres:latest
     restart: always
     environment:
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=dsd-database
     ports:
