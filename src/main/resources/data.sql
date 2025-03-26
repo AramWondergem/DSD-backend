@@ -120,7 +120,6 @@ VALUES (1002, 'LOCKED', 1001);
 INSERT INTO doors (id, door_status, parking_id)
 VALUES (1003, 'LOCKED', 1001);
 
-INSERT INTO doors (id,door_status,parking_id) VALUES (3,'LOCKED',1);
 INSERT INTO doors_users (user_id, door_id)
 VALUES (1001, 1001);
 
@@ -132,8 +131,8 @@ VALUES (1001, 101, 1001, NULL, '2025-03-19T10:00:00Z'),
        (1005, 105, 1001, NULL, '2025-03-19T10:20:00Z');
 
 
-INSERT INTO leases (id, lease_start_date, lease_end_date,external_id, status,apartment_number,dropbox_document_download_url) values
-(1001,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',300,'dummydata-undefined');
+INSERT INTO leases (id,user_id, lease_start_date, lease_end_date,external_id, status,apartment_number,dropbox_document_download_url) values
+(1001,1014,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',300,'dummydata-undefined');
 
 
 

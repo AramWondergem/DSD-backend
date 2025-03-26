@@ -7,12 +7,10 @@ import com.dropbox.sign.api.SignatureRequestApi;
 import com.dropbox.sign.model.*;
 import com.example.demo.dto.LeaseDTO;
 import com.example.demo.dto.LeaseSignRequestDTO;
-import com.example.demo.dto.TenantDto;
 import com.example.demo.entities.*;
 import com.example.demo.mappers.LeaseMapper;
 import com.example.demo.repository.ApartmentRepository;
 import com.example.demo.repository.LeaseRepository;
-import com.example.demo.repository.TenantRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.enums.DocStatus;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +29,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,7 +43,7 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     String dropBoxSignToken;
 
     @Autowired
-    public LeaseManagementDropBoxImpl(UserRepository userRepository, LeaseRepository leaseRepository, ApartmentRepository apartmentRepository, TenantRepository tenantRepository, LeaseMapper leaseMapper) {
+    public LeaseManagementDropBoxImpl(UserRepository userRepository, LeaseRepository leaseRepository, ApartmentRepository apartmentRepository, LeaseMapper leaseMapper) {
         this.userRespository = userRepository;
         this.leaseRepository = leaseRepository;
         this.apartmentRepository = apartmentRepository;
@@ -92,8 +89,6 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
                 .dropboxDocumentUrl(response.getSignatureRequest().getFilesUrl())
                 .user(user)
                 .build());
-        log.info("new lease created");
-        log.info(newLease.toString());
         return response;
     }
 
