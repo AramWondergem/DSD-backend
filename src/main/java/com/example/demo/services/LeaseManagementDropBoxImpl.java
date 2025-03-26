@@ -129,14 +129,14 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
         }
         List<TenantDto> signers = new ArrayList<>();
         for(Tenant tenant: lease.getTenants()){
-            signers.add(TenantDto.builder().email(tenant.getUser().getEmail()).name(tenant.getUser().getName()).email(tenant.getUser().getEmail()).build());
+            signers.add(TenantDto.builder().username(tenant.getUser().getUsername()).name(tenant.getUser().getName()).email(tenant.getUser().getEmail()).build());
         }
         leaseRepository.save(lease);
         Optional<Apartment> apartment = apartmentRepository.findByApartmentNumber(lease.getApartment().getApartmentNumber());
         Long apartmentNumber = apartment.orElseThrow().getApartmentNumber();
         log.info("lease status got: {}", lease);
-        return LeaseDTO.builder().id(lease.getId()).startDate(zonedDateToString(lease.getStartDate())).endDate(zonedDateToString(lease.getEndDate()))
-                .apartmentNumber(apartmentNumber).externalId(lease.getExternalId()).signatureRequestGetResponse(result).tenants(signers).build();
+        return LeaseDTO.builder().id(lease.getId()).status(lease.getStatus().getDocumentStatus()).startDate(zonedDateToString(lease.getStartDate())).endDate(zonedDateToString(lease.getEndDate()))
+                .apartmentNumber(apartmentNumber).externalId(lease.getExternalId()).signatureRequestGetResponse(result).tenants(signers).dropboxUrl(lease.getDropboxDocumentUrl()).build();
     }
 
 
