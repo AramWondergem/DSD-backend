@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     Optional<Apartment> findByApartmentNumber(Long apartmentNumber);
+
+    boolean existsByApartmentNumber(Long apartmentNumber);
 }

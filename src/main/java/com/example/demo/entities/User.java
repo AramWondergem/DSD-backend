@@ -58,6 +58,7 @@ public class User {
     @OneToMany(mappedBy = "issuedBy")
     List<EntryCode> issuedEntryCodes;
 
-    @OneToOne(mappedBy = "user")
-    Tenant tenantProfile;
+    @OneToMany(mappedBy = "user")
+    List<Lease> leases;
+
 }

@@ -30,12 +30,10 @@ public class Lease {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     DocStatus status;
-    @ManyToOne
-    @JoinColumn(name = "apartment_id", nullable = false)
-    Apartment apartment;
-    @ManyToMany
-    @JoinTable(name = "lease_tenants", joinColumns = @JoinColumn(name = "lease_id"), inverseJoinColumns = @JoinColumn(name = "tenant_id"))
-    List<Tenant> tenants;
+    Long apartmentNumber;
     @Column(name = "dropbox_document_download_url")
     String dropboxDocumentUrl;
+
+    @ManyToOne
+    User user;
 }
