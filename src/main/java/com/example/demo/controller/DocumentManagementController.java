@@ -33,6 +33,11 @@ import java.util.List;
 public class DocumentManagementController {
     final LeaseManagementDropBoxImpl leaseManagementDropBox;
 
+    @GetMapping(path = "/getAllByUser/{username}")
+    public ResponseEntity<List<LeaseDTO>> getAllLeaseRecordsForUsername(@PathVariable String username){
+        return new ResponseEntity<>(leaseManagementDropBox.getAllLeasesByUsername(username), HttpStatus.OK);
+    }
+
     @Operation(
             summary = "Send document request via Dropbox signature services",
             description = "Sends signature request and saves to database for a valid user",

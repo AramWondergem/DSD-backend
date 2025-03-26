@@ -18,5 +18,6 @@ public class LeaseDTO {
     String endDate;
     Apartment apartment;
     List<Tenant> tenants;
+    String dropboxUrl;
     SignatureRequestGetResponse signatureRequestGetResponse;
 }

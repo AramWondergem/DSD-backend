@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -94,6 +95,22 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
         signatureRequestApi.signatureRequestCancel(lease.getExternalId());
         lease.setStatus(DocStatus.CANCELED);
         leaseRepository.save(lease);
+    }
+
+    public List<LeaseDTO> getAllLeasesByUsername(String username){
+        User user = userRespository.findByUsername(username).orElseThrow();
+        Tenant tenant = tenantRepository.findByUser(user).orElseThrow();
+        List<Lease> tenantLeases = tenant.getLeases();
+        List<LeaseDTO> listOfLeasesUpdated = new ArrayList<>();
+        for(Lease lease: tenantLeases){
+            try{
+               LeaseDTO leaseDTO = getLeaseStatus(lease.getId());
+               listOfLeasesUpdated.add(leaseDTO);
+            }catch (ApiException apiException){
+                log.error("dropbox api issue, not updating", apiException);
+            }
+        }
+        return listOfLeasesUpdated;
     }
 
 
