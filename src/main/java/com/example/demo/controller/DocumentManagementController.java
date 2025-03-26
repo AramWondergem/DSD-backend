@@ -8,6 +8,7 @@ import com.example.demo.dto.MetaData;
 import com.example.demo.entities.Lease;
 import com.example.demo.services.LeaseManagementDropBoxImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,6 +32,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DocumentManagementController {
     final LeaseManagementDropBoxImpl leaseManagementDropBox;
+
+    @GetMapping(path = "/getAllByUser/{username}")
+    public ResponseEntity<List<LeaseDTO>> getAllLeaseRecordsForUsername(@PathVariable String username){
+        return new ResponseEntity<>(leaseManagementDropBox.getAllLeasesByUsername(username), HttpStatus.OK);
+    }
 
     @Operation(
             summary = "Send document request via Dropbox signature services",
@@ -98,8 +104,8 @@ public class DocumentManagementController {
                     @ApiResponse(responseCode = "4XX", description = "bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
             }
     )
-    @GetMapping(path = "/get", produces = "application/json")
-    ResponseEntity<Lease> getLeaseSignatureStatus(@RequestParam Long leaseId) throws ApiException {
+    @GetMapping(path = "/get/{leaseId}", produces = "application/json")
+    ResponseEntity<LeaseDTO> getLeaseSignatureStatus(@PathVariable Long leaseId) throws ApiException {
         return new ResponseEntity<>(leaseManagementDropBox.getLeaseStatus(leaseId), HttpStatus.OK);
     }
 
@@ -113,6 +119,7 @@ public class DocumentManagementController {
                     @ApiResponse(responseCode = "404", description = "Lease not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class)))
             }
     )
+    @Hidden
     @PutMapping("/{id}")
     public ResponseEntity<Lease> updateLease(@PathVariable Long id, @RequestBody LeaseDTO leaseDTO) {
         //todo validate
@@ -121,32 +128,14 @@ public class DocumentManagementController {
     }
 
     @Operation(
-            summary = "callback for dropbox to update status",
-            description = "uses our lease ID to read stored external id provided by dropbox to get the most recent status of specific doc"
-            ,
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "db updated"
-                    ),
-                    @ApiResponse(responseCode = "4XX", description = "bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
-            }
-    )
-    @GetMapping(path = "/update")
-    ResponseEntity<SignatureRequestGetResponse> updateStatus(@RequestParam Long leaseId) throws ApiException {
-        //todo validate
-        leaseManagementDropBox.dropboxCallback(leaseId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Operation(
             summary = "Get all leases",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Leases retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Lease.class)))
+                    @ApiResponse(responseCode = "200", description = "Leases retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LeaseDTO.class)))
             }
     )
     @GetMapping("/all")
-    public ResponseEntity<List<Lease>> getAllLeases() {
-        //todo validate
-        List<Lease> leases = leaseManagementDropBox.getAll();
+    public ResponseEntity<List<LeaseDTO>> getAllLeases() {
+        List<LeaseDTO> leases = leaseManagementDropBox.getAll();
         return new ResponseEntity<>(leases, HttpStatus.OK);
     }
 }

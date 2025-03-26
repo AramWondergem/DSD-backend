@@ -21,7 +21,7 @@ public class Complaint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @JoinColumn(name = "submitter_user_id)", nullable = false)
+    @JoinColumn(name = "submitter_user_id", nullable = false)
     @ManyToOne
     User user;
 
@@ -30,10 +30,11 @@ public class Complaint {
 
     @Column(name = "time_created")
     ZonedDateTime timeCreated;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "complaint_status")
     ComplaintStatus complaintStatus;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "complaint_type")
     ComplaintType complaintType;
 }
