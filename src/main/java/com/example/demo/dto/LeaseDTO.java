@@ -16,8 +16,8 @@ public class LeaseDTO {
     String externalId;
     String startDate;
     String endDate;
-    Apartment apartment;
-    List<Tenant> tenants;
+    Long apartmentNumber;
+    List<TenantDto> tenants;
     String dropboxUrl;
     SignatureRequestGetResponse signatureRequestGetResponse;
 }

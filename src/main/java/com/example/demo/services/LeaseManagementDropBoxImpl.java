@@ -7,6 +7,7 @@ import com.dropbox.sign.api.SignatureRequestApi;
 import com.dropbox.sign.model.*;
 import com.example.demo.dto.LeaseDTO;
 import com.example.demo.dto.LeaseSignRequestDTO;
+import com.example.demo.dto.TenantDto;
 import com.example.demo.entities.*;
 import com.example.demo.repository.ApartmentRepository;
 import com.example.demo.repository.LeaseRepository;
@@ -126,13 +127,16 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
             lease.setStatus(DocStatus.CANCELED);
         }
         }
-        List<Tenant> signers = lease.getTenants();
-
+        List<TenantDto> signers = new ArrayList<>();
+        for(Tenant tenant: lease.getTenants()){
+            signers.add(TenantDto.builder().email(tenant.getUser().getEmail()).name(tenant.getUser().getName()).email(tenant.getUser().getEmail()).build());
+        }
         leaseRepository.save(lease);
         Optional<Apartment> apartment = apartmentRepository.findByApartmentNumber(lease.getApartment().getApartmentNumber());
+        Long apartmentNumber = apartment.orElseThrow().getApartmentNumber();
         log.info("lease status got: {}", lease);
         return LeaseDTO.builder().id(lease.getId()).startDate(zonedDateToString(lease.getStartDate())).endDate(zonedDateToString(lease.getEndDate()))
-                .apartment(apartment.orElseThrow()).externalId(lease.getExternalId()).signatureRequestGetResponse(result).tenants(signers).build();
+                .apartmentNumber(apartmentNumber).externalId(lease.getExternalId()).signatureRequestGetResponse(result).tenants(signers).build();
     }
 
 
@@ -151,17 +155,15 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
 
     public List<LeaseDTO> getAll() {
         List<Lease> leases = leaseRepository.findAll();
-        List<LeaseDTO> leaseDTOs = leases.stream()
+        return leases.stream()
             .map(lease -> LeaseDTO.builder()
                     .id(lease.getId())
                     .startDate(zonedDateToString(lease.getStartDate()))
                     .endDate(zonedDateToString(lease.getEndDate()))
-                    .apartment(lease.getApartment())
+                    .apartmentNumber(lease.getApartment().getApartmentNumber())
                     .externalId(lease.getExternalId())
-                    .tenants(lease.getTenants())
                     .build())
             .collect(Collectors.toList());
-        return  leaseDTOs;
     }
 
     public Lease update(Long id, LeaseDTO leaseDetails) {
