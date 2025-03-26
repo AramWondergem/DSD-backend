@@ -36,4 +36,6 @@ public class Lease {
     @ManyToMany
     @JoinTable(name = "lease_tenants", joinColumns = @JoinColumn(name = "lease_id"), inverseJoinColumns = @JoinColumn(name = "tenant_id"))
     List<Tenant> tenants;
+    @Column(name = "dropbox_document_download_url")
+    String dropboxDocumentUrl;
 }

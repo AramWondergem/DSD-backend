@@ -107,8 +107,8 @@ VALUES
     (5, 105, 1, NULL, '2025-03-19T10:20:00Z');
 
 INSERT INTO tenants (id, user_profile_id) values (100,13);
-INSERT INTO leases (id, lease_start_date, lease_end_date,external_id, status,apartment_id) values
-(100,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',100);
+INSERT INTO leases (id, lease_start_date, lease_end_date,external_id, status,apartment_id,dropbox_document_download_url) values
+(100,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',100,'dummydata-undefined');
 INSERT INTO lease_tenants values (100,100);
 
 
