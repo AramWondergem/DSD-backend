@@ -41,23 +41,20 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tenants_apartments",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "apartment_id")
     )
     List<Apartment> apartments;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "doors_users",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "door_id")
     )
     List<Door> doors;
 
-    @OneToMany(mappedBy = "issuedBy")
+    @OneToMany(mappedBy = "issuedBy", fetch = FetchType.LAZY)
     List<EntryCode> issuedEntryCodes;
-
-    @OneToOne(mappedBy = "user")
-    Tenant tenantProfile;
 }

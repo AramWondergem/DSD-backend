@@ -154,9 +154,9 @@ VALUES (1001, 101, 1001, NULL, '2025-03-19T10:00:00Z'),
        (1004, 104, 1001, NULL, '2025-03-19T10:15:00Z'),
        (1005, 105, 1001, NULL, '2025-03-19T10:20:00Z');
 
-INSERT INTO tenants (id, user_profile_id) values (1001,1013);
+INSERT INTO tenants (id, user_profile_id) values (1001,1014);
 INSERT INTO leases (id, lease_start_date, lease_end_date,external_id, status,apartment_id,dropbox_document_download_url) values
-(1001,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',1008,'dummydata-undefined');
+(1001,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',1008,'https://app.hellosign.com/editor/view/super_group_guid/e79bdb2ace1d29a19f8fbf96676074d2b7188a55');
 INSERT INTO lease_tenants values (1001,1001);
 
 

@@ -1,8 +1,6 @@
 package com.example.demo.dto;
 
 import com.dropbox.sign.model.SignatureRequestGetResponse;
-import com.example.demo.entities.Apartment;
-import com.example.demo.entities.Tenant;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,8 +14,8 @@ public class LeaseDTO {
     String externalId;
     String startDate;
     String endDate;
-    Apartment apartment;
-    List<Tenant> tenants;
+    Long apartmentNumber;
+    List<TenantDTO> tenants;
     String dropboxUrl;
     SignatureRequestGetResponse signatureRequestGetResponse;
 }

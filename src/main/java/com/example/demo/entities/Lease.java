@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import com.example.demo.util.enums.DocStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,10 +31,11 @@ public class Lease {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     DocStatus status;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id", nullable = false)
     Apartment apartment;
-    @ManyToMany
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "lease_tenants", joinColumns = @JoinColumn(name = "lease_id"), inverseJoinColumns = @JoinColumn(name = "tenant_id"))
     List<Tenant> tenants;
     @Column(name = "dropbox_document_download_url")

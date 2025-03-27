@@ -24,19 +24,19 @@ public class Apartment {
     @Column(name = "apartment_number", unique = true)
     Long apartmentNumber;
 
-    @OneToMany(mappedBy = "apartment")
+    @OneToMany(mappedBy = "apartment", fetch = FetchType.LAZY)
     Set<Door> doors;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id", nullable = false)
     Building building;
 
-    @OneToMany(mappedBy = "apartment")
+    @OneToMany(mappedBy = "apartment",fetch = FetchType.LAZY)
     List<Lease> leaseHistory;
 
-    @ManyToMany(mappedBy = "apartments")
+    @ManyToMany(mappedBy = "apartments",fetch = FetchType.LAZY)
     Set<User> tenants;
 
-    @OneToMany(mappedBy = "apartment")
+    @OneToMany(mappedBy = "apartment",fetch = FetchType.LAZY)
     List<Locker> lockers;
 }

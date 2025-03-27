@@ -7,7 +7,11 @@ import com.dropbox.sign.api.SignatureRequestApi;
 import com.dropbox.sign.model.*;
 import com.example.demo.dto.LeaseDTO;
 import com.example.demo.dto.LeaseSignRequestDTO;
-import com.example.demo.entities.*;
+import com.example.demo.dto.TenantDTO;
+import com.example.demo.entities.Apartment;
+import com.example.demo.entities.Lease;
+import com.example.demo.entities.Tenant;
+import com.example.demo.entities.User;
 import com.example.demo.repository.ApartmentRepository;
 import com.example.demo.repository.LeaseRepository;
 import com.example.demo.repository.TenantRepository;
@@ -60,10 +64,10 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
 
     @Transactional(rollbackFor = Exception.class)
     public SignatureRequestGetResponse createLeaseSignatureRequest(LeaseSignRequestDTO leaseSignRequestDTO) throws ApiException {
-        SignatureRequestGetResponse response;
-        Optional<User> userRecord = userRespository.findByEmailIgnoreCase(leaseSignRequestDTO.getSignerEmails().getFirst());
+        SignatureRequestGetResponse response = null;
+        Optional<User> userRecord = userRespository.findByEmailIgnoreCase(leaseSignRequestDTO.getSignerEmail());
         User user = userRecord.orElseThrow(() -> new EmptyResultDataAccessException("user not found", 1));
-        var signer = new SubSignatureRequestSigner().emailAddress(leaseSignRequestDTO.getSignerEmails().getFirst()).name(user.getName()).order(0);
+        var signer = new SubSignatureRequestSigner().emailAddress(leaseSignRequestDTO.getSignerEmail()).name(user.getName()).order(0);
         var signOptions = new SubSigningOptions().draw(true).type(true).defaultType(SubSigningOptions.DefaultTypeEnum.DRAW);
         var subFieldOptions = new SubFieldOptions().dateFormat(SubFieldOptions.DateFormatEnum.DDMMYYYY);
         var data = new SignatureRequestSendRequest()
@@ -78,12 +82,13 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
                 .testMode(true);
         Optional<Apartment> apartmentOptional = apartmentRepository.findByApartmentNumber(leaseSignRequestDTO.getApartmentNumber());
         Apartment apartment = apartmentOptional.orElseThrow(() -> new EmptyResultDataAccessException("no record matches apartment number in database", 1));
-        Optional<Tenant> tenantOptional = Optional.of(tenantRepository.findByUser(user).orElse(tenantRepository.save(Tenant.builder().user(user).build())));
-        response = signatureRequestApi.signatureRequestSend(data);
-        Lease newLease = leaseRepository.save(Lease.builder().status(DocStatus.PENDING).apartment((apartment)).externalId(response.getSignatureRequest().getSignatureRequestId())
+        Optional<Tenant> tenantOptional = tenantRepository.findByUserId(user.getId());
+        Tenant tenant = tenantOptional.orElseGet(() -> tenantRepository.save(Tenant.builder().userId(user.getId()).build()));
+        //response = signatureRequestApi.signatureRequestSend(data);
+        Lease newLease = leaseRepository.save(Lease.builder().status(DocStatus.PENDING).apartment((apartment)).externalId("test")
                 .startDate(parseZonedDateTime(leaseSignRequestDTO.getMetaData().getStartDate()))
                 .endDate(parseZonedDateTime(leaseSignRequestDTO.getMetaData().getEndDate()))
-                .tenants(List.of(tenantOptional.get())).dropboxDocumentUrl(response.getSignatureRequest().getFilesUrl())
+                .dropboxDocumentUrl("test")
                 .build());
         log.info("new lease created");
         return response;
@@ -97,16 +102,24 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
         leaseRepository.save(lease);
     }
 
-    public List<LeaseDTO> getAllLeasesByUsername(String username){
-        User user = userRespository.findByUsername(username).orElseThrow();
-        Tenant tenant = tenantRepository.findByUser(user).orElseThrow();
-        List<Lease> tenantLeases = tenant.getLeases();
+    public List<LeaseDTO> getAllLeasesByUsername(String username) {
+        Optional<User> user = userRespository.findByUsername(username);
+        if (user.isEmpty()) {
+            log.info("submitted user does not have any leases");
+            return new ArrayList<>();
+        }
+        Optional<Tenant> tenant = tenantRepository.findByUserId(user.get().getId());
+        if (tenant.isEmpty()) {
+            log.info("tenant has no existing leases");
+            return new ArrayList<>();
+        }
+        List<Lease> tenantLeases = tenant.get().getLeases();
         List<LeaseDTO> listOfLeasesUpdated = new ArrayList<>();
-        for(Lease lease: tenantLeases){
-            try{
-               LeaseDTO leaseDTO = getLeaseStatus(lease.getId());
-               listOfLeasesUpdated.add(leaseDTO);
-            }catch (ApiException apiException){
+        for (Lease lease : tenantLeases) {
+            try {
+                LeaseDTO leaseDTO = getLeaseStatus(lease.getId());
+                listOfLeasesUpdated.add(leaseDTO);
+            } catch (ApiException apiException) {
                 log.error("dropbox api issue, not updating", apiException);
             }
         }
@@ -117,22 +130,18 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     public LeaseDTO getLeaseStatus(Long leaseId) throws ApiException, EmptyResultDataAccessException {
         SignatureRequestGetResponse result = null;
         Lease lease = leaseRepository.findById(leaseId).orElseThrow();
-        if(lease.getStatus() == DocStatus.PENDING){
-             result = signatureRequestApi.signatureRequestGet(lease.getExternalId());
-             lease.setDropboxDocumentUrl(result.getSignatureRequest().getFilesUrl());
-        if (Boolean.TRUE.equals(result.getSignatureRequest().getIsComplete())) {
-            lease.setStatus(DocStatus.SIGNED);
-        }else if(Boolean.TRUE.equals(result.getSignatureRequest().getIsDeclined())){
-            lease.setStatus(DocStatus.CANCELED);
+        if (lease.getStatus() == DocStatus.PENDING) {
+            result = signatureRequestApi.signatureRequestGet(lease.getExternalId());
+            lease.setDropboxDocumentUrl(result.getSignatureRequest().getFilesUrl());
+            if (Boolean.TRUE.equals(result.getSignatureRequest().getIsComplete())) {
+                lease.setStatus(DocStatus.SIGNED);
+            } else if (Boolean.TRUE.equals(result.getSignatureRequest().getIsDeclined())) {
+                lease.setStatus(DocStatus.CANCELED);
+            }
         }
-        }
-        List<Tenant> signers = lease.getTenants();
-
         leaseRepository.save(lease);
-        Optional<Apartment> apartment = apartmentRepository.findByApartmentNumber(lease.getApartment().getApartmentNumber());
-        log.info("lease status got: {}", lease);
-        return LeaseDTO.builder().id(lease.getId()).startDate(zonedDateToString(lease.getStartDate())).endDate(zonedDateToString(lease.getEndDate()))
-                .apartment(apartment.orElseThrow()).externalId(lease.getExternalId()).signatureRequestGetResponse(result).tenants(signers).build();
+        return LeaseDTO.builder().id(lease.getId()).status(lease.getStatus().getDocumentStatus()).startDate(zonedDateToString(lease.getStartDate())).endDate(zonedDateToString(lease.getEndDate()))
+                .apartmentNumber(lease.getApartment().getApartmentNumber()).externalId(lease.getExternalId()).signatureRequestGetResponse(result).dropboxUrl(lease.getDropboxDocumentUrl()).build();
     }
 
 
@@ -152,16 +161,15 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
     public List<LeaseDTO> getAll() {
         List<Lease> leases = leaseRepository.findAll();
         List<LeaseDTO> leaseDTOs = leases.stream()
-            .map(lease -> LeaseDTO.builder()
-                    .id(lease.getId())
-                    .startDate(zonedDateToString(lease.getStartDate()))
-                    .endDate(zonedDateToString(lease.getEndDate()))
-                    .apartment(lease.getApartment())
-                    .externalId(lease.getExternalId())
-                    .tenants(lease.getTenants())
-                    .build())
-            .collect(Collectors.toList());
-        return  leaseDTOs;
+                .map(lease -> LeaseDTO.builder()
+                        .id(lease.getId())
+                        .startDate(zonedDateToString(lease.getStartDate()))
+                        .endDate(zonedDateToString(lease.getEndDate()))
+                        .apartmentNumber(lease.getApartment().getApartmentNumber())
+                        .externalId(lease.getExternalId())
+                        .build())
+                .collect(Collectors.toList());
+        return leaseDTOs;
     }
 
     public Lease update(Long id, LeaseDTO leaseDetails) {

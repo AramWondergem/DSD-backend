@@ -15,9 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @Schema(description = "details to be passed along with requests related to document signatures")
 public class LeaseSignRequestDTO {
-    @Size(max = 1)
-    @Schema(description = "List of signer email addresses. Due to dropbox Signature free plan. It's limited to one", example = "[\"signer1@example.com\"]")
-    List<String> signerEmails;
+    @Schema(description = "List of signer email addresses. Due to dropbox Signature free plan. It's limited to one", example = "signer1@example.com")
+    String signerEmail;
     @Nullable
     @Schema(description = "optional username for creating test user just for test purposes ")
     String signerUserName;
