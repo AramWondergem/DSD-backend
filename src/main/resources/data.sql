@@ -135,4 +135,17 @@ INSERT INTO leases (id,user_id, lease_start_date, lease_end_date,external_id, st
 (1001,1014,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',300,'dummydata-undefined');
 
 
-
+INSERT INTO tenants_apartments (user_id, apartment_id)
+VALUES (1001, 1001),
+       (1002, 1001),
+       (1003, 1002),
+       (1004, 1002),
+       (1005, 1003),
+       (1006, 1004),
+       (1007, 1004),
+       (1008, 1005),
+       (1009, 1005),
+       (1010, 1006),
+       (1011, 1006),
+       (1012, 1007),
+       (1014, 1008);
