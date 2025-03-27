@@ -7,7 +7,6 @@ import com.dropbox.sign.api.SignatureRequestApi;
 import com.dropbox.sign.model.*;
 import com.example.demo.dto.LeaseDTO;
 import com.example.demo.dto.LeaseSignRequestDTO;
-import com.example.demo.dto.TenantDTO;
 import com.example.demo.entities.Apartment;
 import com.example.demo.entities.Lease;
 import com.example.demo.entities.Tenant;
@@ -83,14 +82,16 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
         Optional<Apartment> apartmentOptional = apartmentRepository.findByApartmentNumber(leaseSignRequestDTO.getApartmentNumber());
         Apartment apartment = apartmentOptional.orElseThrow(() -> new EmptyResultDataAccessException("no record matches apartment number in database", 1));
         Optional<Tenant> tenantOptional = tenantRepository.findByUserId(user.getId());
-        Tenant tenant = tenantOptional.orElseGet(() -> tenantRepository.save(Tenant.builder().userId(user.getId()).build()));
-        //response = signatureRequestApi.signatureRequestSend(data);
+        response = signatureRequestApi.signatureRequestSend(data);
         Lease newLease = leaseRepository.save(Lease.builder().status(DocStatus.PENDING).apartment((apartment)).externalId("test")
                 .startDate(parseZonedDateTime(leaseSignRequestDTO.getMetaData().getStartDate()))
                 .endDate(parseZonedDateTime(leaseSignRequestDTO.getMetaData().getEndDate()))
-                .dropboxDocumentUrl("test")
+                .dropboxDocumentUrl(response.getSignatureRequest().getFilesUrl())
                 .build());
-        log.info("new lease created");
+        Tenant tenant = tenantOptional.orElseGet(() -> tenantRepository.save(Tenant.builder().userId(user.getId()).build()));
+        tenant.getLeases().add(newLease);
+        tenantRepository.save(tenant);
+        log.info("new lease created and saved with tenant associated with user profile");
         return response;
     }
 
