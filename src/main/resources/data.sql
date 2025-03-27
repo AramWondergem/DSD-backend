@@ -5,15 +5,6 @@ DELETE
 FROM users_roles
 where (select count(*) from users_roles) > 0;
 DELETE
-FROM tenants_apartments
-where (select count(*) from tenants_apartments) > 0;
-DELETE
-FROM lease_tenants
-where (select count(*) from lease_tenants) > 0;
-DELETE
-FROM tenants
-where (select count(*) from tenants) > 0;
-DELETE
 FROM complaints
 where (select count(*) from complaints) > 0;
 DELETE
@@ -129,21 +120,6 @@ VALUES (1002, 'LOCKED', 1001);
 INSERT INTO doors (id, door_status, parking_id)
 VALUES (1003, 'LOCKED', 1001);
 
-INSERT INTO tenants_apartments (user_id, apartment_id)
-VALUES (1001, 1001),
-       (1002, 1001),
-       (1003, 1002),
-       (1004, 1002),
-       (1005, 1003),
-       (1006, 1004),
-       (1007, 1004),
-       (1008, 1005),
-       (1009, 1005),
-       (1010, 1006),
-       (1011, 1006),
-       (1012, 1007),
-       (1014, 1008);
-
 INSERT INTO doors_users (user_id, door_id)
 VALUES (1001, 1001);
 
@@ -154,10 +130,9 @@ VALUES (1001, 101, 1001, NULL, '2025-03-19T10:00:00Z'),
        (1004, 104, 1001, NULL, '2025-03-19T10:15:00Z'),
        (1005, 105, 1001, NULL, '2025-03-19T10:20:00Z');
 
-INSERT INTO tenants (id, user_profile_id) values (1001,1013);
-INSERT INTO leases (id, lease_start_date, lease_end_date,external_id, status,apartment_id,dropbox_document_download_url) values
-(1001,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',1008,'dummydata-undefined');
-INSERT INTO lease_tenants values (1001,1001);
+
+INSERT INTO leases (id,user_id, lease_start_date, lease_end_date,external_id, status,apartment_number,dropbox_document_download_url) values
+(1001,1014,'2025-02-25T10:00:00Z','2026-02-25T10:00:00Z',1,'SIGNED',300,'dummydata-undefined');
 
 
 
