@@ -31,9 +31,6 @@ public class Apartment {
     @JoinColumn(name = "building_id", nullable = false)
     Building building;
 
-    @OneToMany(mappedBy = "apartment",fetch = FetchType.LAZY)
-    List<Lease> leaseHistory;
-
     @ManyToMany(mappedBy = "apartments",fetch = FetchType.LAZY)
     Set<User> tenants;
 

@@ -1,16 +1,14 @@
 package com.example.demo.entities;
 
 import com.example.demo.util.enums.DocStatus;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.time.ZonedDateTime;
-import java.util.List;
+
 @Builder
 @Data
 @Table(name = "leases")
@@ -31,13 +29,10 @@ public class Lease {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     DocStatus status;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "apartment_id", nullable = false)
-    Apartment apartment;
-    @JsonManagedReference
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "lease_tenants", joinColumns = @JoinColumn(name = "lease_id"), inverseJoinColumns = @JoinColumn(name = "tenant_id"))
-    List<Tenant> tenants;
+    @Column(name = "apartment_number")
+    Long apartmentNumber;
+    @ManyToOne
+    User user;
     @Column(name = "dropbox_document_download_url")
     String dropboxDocumentUrl;
 }

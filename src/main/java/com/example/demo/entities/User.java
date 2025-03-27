@@ -57,4 +57,6 @@ public class User {
 
     @OneToMany(mappedBy = "issuedBy", fetch = FetchType.LAZY)
     List<EntryCode> issuedEntryCodes;
+    @OneToMany(mappedBy = "user")
+    List<Lease> leases;
 }
