@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "details to be passed along with requests related to document signatures")

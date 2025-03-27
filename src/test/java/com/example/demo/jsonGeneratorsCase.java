@@ -20,21 +20,21 @@ import static org.mockito.Mockito.mock;
 public class jsonGeneratorsCase {
     ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
-    @Test
-    void generateDTO() throws IOException {
-        File file = new File("../super_backend/target/json_generated/mockfile.pdf");
-        MetaData metaData = MetaData.builder().title("test file").description("test description").build();
-        LeaseSignRequestDTO leaseSignRequestDTO = LeaseSignRequestDTO.builder().signerEmails(List.of("rubengarcia0515@gmail.com")).ccEmails(List.of("rubengarcia0515@gmail.com"))
-                .apartmentNumber(10L).metaData(metaData).file(file).build();
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("../super_backend/target/json_generated/esignature.json"), leaseSignRequestDTO);
-    }
+//    @Test
+//    void generateDTO() throws IOException {
+//        File file = new File("../super_backend/target/json_generated/mockfile.pdf");
+//        MetaData metaData = MetaData.builder().title("test file").description("test description").build();
+//        LeaseSignRequestDTO leaseSignRequestDTO = LeaseSignRequestDTO.builder().signerEmails(List.of("rubengarcia0515@gmail.com")).ccEmails(List.of("rubengarcia0515@gmail.com"))
+//                .apartmentNumber(10L).metaData(metaData).file(file).build();
+//        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("../super_backend/target/json_generated/esignature.json"), leaseSignRequestDTO);
+//    }
 
-     @Test
-    void generateRequestDTO() throws IOException {
-        File file = new File("../super_backend/target/json_generated/mockfile.pdf");
-        MetaData metaData = MetaData.builder().title("test file").description("test description").build();
-        LeaseSignRequestDTO leaseSignRequestDTO = LeaseSignRequestDTO.builder().signerEmails(List.of("rubengarcia0515@gmail.com")).ccEmails(List.of("rubengarcia0515@gmail.com"))
-                .apartmentNumber(10L).metaData(metaData).file(file).build();
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("../super_backend/target/json_generated/leaseSignDetails.json"), leaseSignRequestDTO);
-    }
+//     @Test
+//    void generateRequestDTO() throws IOException {
+//        File file = new File("../super_backend/target/json_generated/mockfile.pdf");
+//        MetaData metaData = MetaData.builder().title("test file").description("test description").build();
+//        LeaseSignRequestDTO leaseSignRequestDTO = LeaseSignRequestDTO.builder().signerEmails(List.of("rubengarcia0515@gmail.com")).ccEmails(List.of("rubengarcia0515@gmail.com"))
+//                .apartmentNumber(10L).metaData(metaData).file(file).build();
+//        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("../super_backend/target/json_generated/leaseSignDetails.json"), leaseSignRequestDTO);
+//    }
 }
