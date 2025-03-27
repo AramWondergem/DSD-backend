@@ -89,7 +89,13 @@ public class LeaseManagementDropBoxImpl implements LeaseManagement {
                 .dropboxDocumentUrl(response.getSignatureRequest().getFilesUrl())
                 .build());
         Tenant tenant = tenantOptional.orElseGet(() -> tenantRepository.save(Tenant.builder().userId(user.getId()).build()));
-        tenant.getLeases().add(newLease);
+        if(tenant.getLeases() == null){
+            List<Lease> leases = new ArrayList<>();
+            leases.add(newLease);
+            tenant.setLeases(leases);
+        }else{
+            tenant.getLeases().add(newLease);
+        }
         tenantRepository.save(tenant);
         log.info("new lease created and saved with tenant associated with user profile");
         return response;
